@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE overlay PUBLIC "-//MOZILLA//DTD XUL V1.0//EN" "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<?xml-stylesheet href="chrome://komodo/skin" type="text/css"?>
+<?xml-stylesheet href="less://komodo/skin/global/global.less" type="text/css"?>
+<?xml-stylesheet href="chrome://komodo/skin/bindings/scrolltabs.css" type="text/css"?>
+<?xml-stylesheet href="chrome://komodo/skin/bindings/sidebar.css" type="text/css"?>
+<?xml-stylesheet href="chrome://komodo/skin/bindings/views.css" type="text/css"?>
+<?xml-stylesheet href="chrome://komodo/skin/bindings/widgets.css" type="text/css"?>
+<?xml-stylesheet href="chrome://komodo/skin/toolbar.css" type="text/css"?>
+<?xml-stylesheet href="chrome://komodo/skin/platform.css" type="text/css"?>
+<?xml-stylesheet href="chrome://AI/skin/default.css" type="text/css"?>
+
+<page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+    <script src="chrome://xtk2/content/xtk2.js" type="application/x-javascript"/>
+    <script src="chrome://AI/content/AI.js" type="application/x-javascript"/>
+
+    <vbox flex="1" id="AI-vbox">
+        <textbox multiline="true" id="ai-history" flex="11" />
+        <hbox align="center" id="AI-tabpanel-hbox" flex="1">
+            <textbox multiline="true" id="ai-query" flex="11" onkeydown="ko.extensions.AI.key(
+                document.getElementById('ai-query'),
+                document.getElementById('ai-history')
+            ).fire"  />
+
+            <button flex="1" oncommand="ko.extensions.AI.query(
+                    document.getElementById('ai-query'),
+                    document.getElementById('ai-history')
+                )">
+                <description value="Ask" />
+            </button>
+        </hbox>
+    </vbox>
+</page>

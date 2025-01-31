@@ -1,0 +1,4 @@
+content xtk2 xtk2/
+content AI content/
+skin AI classic/1.0 skin/
+overlay chrome://komodo/content/komodo.xul chrome://AI/content/overlay.xul
