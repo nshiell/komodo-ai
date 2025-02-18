@@ -13,6 +13,59 @@ fi
 
 mkdir ./build/xpi
 
+#compiledJs=$(cat ./contentSource/*)
+#compiledJs=$(awk '{ if (FNR == 1) print "// file: " FILENAME; print }' contentSource/*)
+
+
+echo "
+/* jshint asi: true */
+if (typeof ko.extensions === 'undefined') ko.extensions = {}
+if (typeof ko.extensions.ai === 'undefined') ko.extensions.ai = {version : '0.0.1'}
+
+this.onerror = alert
+;(() => {
+
+const pendingImports = {}
+
+function importObject(moduleName, name) {
+    if (ko.extensions.ai[moduleName] === undefined) {
+        if (pendingImports[moduleName] === undefined) {
+            throw moduleName +' was not found'
+        }
+
+        pendingImports[moduleName]()
+    }
+
+    if (ko.extensions.ai[moduleName][name] === undefined) {
+        throw moduleName + ' ' + name + ' was not found'
+    }
+
+    return ko.extensions.ai[moduleName][name]
+}
+
+" > ./content/ai2.js
+
+for filePath in ./contentSource/*; do
+    #echo "$filePath"
+    moduleName="$(b=${filePath##*/}; echo ${b%.*})"
+    echo
+
+    echo ";pendingImports.$moduleName = () => {((exportObject) => {"
+    cat $filePath
+    echo "})((name, obj) => {
+        if (!ko.extensions.ai.$moduleName) {
+            ko.extensions.ai.$moduleName = {}
+        }
+
+        ko.extensions.ai.$moduleName[name] = obj
+    })}"
+    #cat "$filename"
+done >> ./content/ai2.js
+
+echo "pendingImports.AI()" >> ./content/ai2.js
+echo "})()" >> ./content/ai2.js
+
+
 # Copy the files and folders required into the build directory
 cp -r ./content ./build/xpi/
 cp -r ./skin ./build/xpi/
