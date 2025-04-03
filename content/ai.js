@@ -29,8 +29,6 @@ function importObject(moduleName, name) {
 ;pendingImports.AI = () => {((exportObject) => {
 /* jshint asi: true */
 const editor = require("ko/editor")
-
-//const FunctionAttribs = ko.extensions.AI.FunctionAttribs
 const FunctionAttribs = importObject('FunctionAttribs', 'FunctionAttribs')
 const Ide = importObject('Ide', 'Ide')
 
@@ -90,7 +88,7 @@ function Tools(ide) {
 
 function askQuery($chatHistory) {
     // create an instance of the XMLHttpRequest object
-    var req = new XMLHttpRequest()
+    const req = new XMLHttpRequest()
 
     // set the URL for the request
     req.open('POST', 'http://localhost:11434/api/chat')

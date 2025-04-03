@@ -61,8 +61,8 @@ echo "})()" >> ./content/ai.js
 
 # Copy the files and folders required into the build directory
 cp -r ./content ./build/xpi/
-cp -r ./skin ./build/xpi/
-cp -r ./xtk2 ./build/xpi/
+#cp -r ./skin ./build/xpi/
+#cp -r ./xtk2 ./build/xpi/
 cp chrome.manifest ./build/xpi/
 cp install.rdf ./build/xpi/
 

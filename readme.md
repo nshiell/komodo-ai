@@ -32,7 +32,7 @@ generate helpful responses tailored to the Komodo IDE environment.
 ## Installation and Setup
 
 1. Clone this repository into your local development environment.
-2. Run either ./build.sh or ./build.sh &>/dev/null && cp komodo-ai.xpi /home/$USER/.komodoide/12.0/XRE/extensions/komodo-ai@nshiell.com.xpi && /opt/komodo/bin/komodo
+2. Run either `./build.sh` or `./build.sh &>/dev/null && cp komodo-ai.xpi /home/$USER/.komodoide/12.0/XRE/extensions/komodo-ai@nshiell.com.xpi && /opt/komodo/bin/komodo`
 4. Start or restart Komodo IDE to apply the changes and load the AI Assistant plugin.
 
 
