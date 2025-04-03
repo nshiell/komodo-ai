@@ -1,5 +1,36 @@
+
+/* jshint asi: true */
+if (typeof ko.extensions === 'undefined') ko.extensions = {}
+if (typeof ko.extensions.ai === 'undefined') ko.extensions.ai = {version : '0.0.1'}
+
+this.onerror = alert
+;(() => {
+
+const pendingImports = {}
+
+function importObject(moduleName, name) {
+    if (ko.extensions.ai[moduleName] === undefined) {
+        if (pendingImports[moduleName] === undefined) {
+            throw moduleName +' was not found'
+        }
+
+        pendingImports[moduleName]()
+    }
+
+    if (ko.extensions.ai[moduleName][name] === undefined) {
+        throw moduleName + ' ' + name + ' was not found'
+    }
+
+    return ko.extensions.ai[moduleName][name]
+}
+
+
+
+;pendingImports.AI = () => {((exportObject) => {
 /* jshint asi: true */
 const editor = require("ko/editor")
+
+//const FunctionAttribs = ko.extensions.AI.FunctionAttribs
 const FunctionAttribs = importObject('FunctionAttribs', 'FunctionAttribs')
 const Ide = importObject('Ide', 'Ide')
 
@@ -59,7 +90,7 @@ function Tools(ide) {
 
 function askQuery($chatHistory) {
     // create an instance of the XMLHttpRequest object
-    const req = new XMLHttpRequest()
+    var req = new XMLHttpRequest()
 
     // set the URL for the request
     req.open('POST', 'http://localhost:11434/api/chat')
@@ -141,3 +172,140 @@ function ask($query, $chatHistory) {
 }
 
 exportObject('ask', ask)
+})((name, obj) => {
+        if (!ko.extensions.ai.AI) {
+            ko.extensions.ai.AI = {}
+        }
+
+        ko.extensions.ai.AI[name] = obj
+    })}
+
+;pendingImports.FunctionAttribs = () => {((exportObject) => {
+/* jshint asi: true */
+function FunctionAttribs (protoClass) {
+    function setAttrib(chain, value) {
+        var chain = chain.slice()
+        const last = chain.pop()
+        var parent = protoClass
+
+        for (var i = 0; i < chain.length; i++) {
+            var childName = chain[i]
+
+            if (parent[childName] === undefined) {
+                parent[childName] = {}
+            }
+            parent = parent[childName]
+        }
+
+        parent[last] = value
+    }
+
+    function getAttrib(chain, remove) {
+        var chain = chain.slice()
+        const last = chain.pop()
+
+        var parent = protoClass
+        for (var i = 0; i < chain.length; i++) {
+            if (parent === undefined) {
+                return undefined
+            }
+
+            parent = parent[chain[i]]
+        }
+
+        if (parent === undefined || parent[last] === undefined) {
+            return undefined
+        }
+
+        const value = parent[last]
+        if (remove) {
+            parent[last] = undefined
+        }
+        return value
+    }
+
+    const allowedAttributes = ['description', 'exposeToAi']
+    for (var i = 0; i < allowedAttributes.length; i++) {
+        setAttrib(['attributes', allowedAttributes[i]], {})
+    }
+
+    setAttrib(['attributes', 'description'], {})
+    this.description = function (value) {
+        setAttrib(['attributes', 'description', '_pending'], value)
+    }
+
+    setAttrib(['attributes', 'exposeToAi'], {})
+    this.exposeToAi = function (value) {
+        setAttrib(['attributes', 'exposeToAi', '_pending'], value)
+    }
+
+    this.add = function (name) {
+        for (var i = 0; i < allowedAttributes.length; i++) {
+            var atribName = allowedAttributes[i]
+            var value = getAttrib(['attributes', atribName, '_pending'], true)
+            if (value !== undefined) {
+                setAttrib(['attributes', atribName, name], value)
+            }
+        }
+
+        return name
+    }
+}
+
+exportObject('FunctionAttribs', FunctionAttribs)
+})((name, obj) => {
+        if (!ko.extensions.ai.FunctionAttribs) {
+            ko.extensions.ai.FunctionAttribs = {}
+        }
+
+        ko.extensions.ai.FunctionAttribs[name] = obj
+    })}
+
+;pendingImports.Ide = () => {((exportObject) => {
+/* jshint asi: true */
+const editor = require("ko/editor")
+
+//const FunctionAttribs = ko.extensions.AI.FunctionAttribs
+const FunctionAttribs = importObject('FunctionAttribs', 'FunctionAttribs')
+
+function Ide(editor, ko) {
+    // Register the attributes for this class
+    const Description = this.attribs.description
+    const ExposeToAi = this.attribs.exposeToAi
+    const f = this.attribs.add // including the special call for defining the function
+
+    Description("Gets the language of the currently edited file")
+    ExposeToAi(true)
+    this[f('getCodeLanguage')] = function () {
+        return editor.getLanguage()
+    }
+
+    Description("Gets the currently source code from the currently editing open file")
+    ExposeToAi(true)
+    this[f('getValue')] = function () {
+        return editor.getValue()
+    }
+
+    Description("Gets the current time and the date")
+    ExposeToAi(true)
+    this[f('getDateTime')] = function () {
+        return (new Date()).toString()
+    }
+
+    Description("Gets the version string of this version of Komodo IDE")
+    ExposeToAi(true)
+    this[f('getKomodoIdeVersion')] = function () {
+        return ko.version
+    }
+}; Ide.prototype.attribs = new FunctionAttribs(Ide)
+
+exportObject('Ide', Ide)
+})((name, obj) => {
+        if (!ko.extensions.ai.Ide) {
+            ko.extensions.ai.Ide = {}
+        }
+
+        ko.extensions.ai.Ide[name] = obj
+    })}
+pendingImports.AI()
+})()

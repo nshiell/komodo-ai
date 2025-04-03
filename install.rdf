@@ -5,7 +5,7 @@
     <em:name>AI</em:name>
     <em:version>0.0.1</em:version>
     <em:description>An IA addon for Komodo</em:description>
-    <em:creator>Adam Lyskawa</em:creator>
+    <em:creator>Nicholas Shiell</em:creator>
     <em:homepageURL>https://nshiell.com/komodo-ai</em:homepageURL>
     <em:type>2</em:type>
     <!-- type=extension -->

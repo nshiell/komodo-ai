@@ -1,7 +1,5 @@
-if (typeof ko.extensions === 'undefined') ko.extensions = {}
-if (typeof ko.extensions.AI === 'undefined') ko.extensions.AI = { version : '0.0.1' }
-
-ko.extensions.AI.FunctionAttribs = function (protoClass) {
+/* jshint asi: true */
+function FunctionAttribs (protoClass) {
     function setAttrib(chain, value) {
         var chain = chain.slice()
         const last = chain.pop()
@@ -70,3 +68,5 @@ ko.extensions.AI.FunctionAttribs = function (protoClass) {
         return name
     }
 }
+
+exportObject('FunctionAttribs', FunctionAttribs)

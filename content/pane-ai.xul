@@ -23,7 +23,7 @@
 
             $aiQuery.addEventListener('keypress', (e) => {
                 if (e.keyCode == 13 && !$aiMultiline.checked ) {
-                    ko.extensions.AI.ask($aiQuery, $aiHistory)
+                    ko.extensions.ai.AI.ask($aiQuery, $aiHistory)
                 }
             })
         })
@@ -34,9 +34,7 @@
     ]]></script>
 
     <script src="chrome://xtk2/content/xtk2.js" type="application/x-javascript"/>
-    <!--<script src="chrome://AI/content/query.js" type="application/x-javascript"/>-->
-    <script src="chrome://AI/content/FunctionAttribs.js" type="application/x-javascript"/>
-    <script src="chrome://AI/content/AI.js" type="application/x-javascript"/>
+    <script src="chrome://AI/content/ai.js" type="application/x-javascript"/>
 
     <vbox flex="1" id="AI-vbox">
         <textbox multiline="true" id="ai-history" flex="11" />
@@ -45,7 +43,7 @@
 
             <checkbox id="ai-multiline" label="Multiline" accesskey="O" oncommand="toggleMultiline()" />
 
-            <button flex="1" oncommand="ko.extensions.AI.ask(
+            <button flex="1" oncommand="ko.extensions.ai.AI.ask(
                     document.getElementById('ai-query'),
                     document.getElementById('ai-history')
                 )">

@@ -13,10 +13,6 @@ fi
 
 mkdir ./build/xpi
 
-#compiledJs=$(cat ./contentSource/*)
-#compiledJs=$(awk '{ if (FNR == 1) print "// file: " FILENAME; print }' contentSource/*)
-
-
 echo "
 /* jshint asi: true */
 if (typeof ko.extensions === 'undefined') ko.extensions = {}
@@ -43,10 +39,9 @@ function importObject(moduleName, name) {
     return ko.extensions.ai[moduleName][name]
 }
 
-" > ./content/ai2.js
+" > ./content/ai.js
 
 for filePath in ./contentSource/*; do
-    #echo "$filePath"
     moduleName="$(b=${filePath##*/}; echo ${b%.*})"
     echo
 
@@ -59,12 +54,10 @@ for filePath in ./contentSource/*; do
 
         ko.extensions.ai.$moduleName[name] = obj
     })}"
-    #cat "$filename"
-done >> ./content/ai2.js
+done >> ./content/ai.js
 
-echo "pendingImports.AI()" >> ./content/ai2.js
-echo "})()" >> ./content/ai2.js
-
+echo "pendingImports.AI()" >> ./content/ai.js
+echo "})()" >> ./content/ai.js
 
 # Copy the files and folders required into the build directory
 cp -r ./content ./build/xpi/
