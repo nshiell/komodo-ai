@@ -5,6 +5,10 @@ const editor = require("ko/editor")
 
 this.onerror = alert
 
+//alert(5555)
+
+//const r = require('resource://chrome://AI/content/FunctionAttribs.js')
+
 const FunctionAttribs = ko.extensions.AI.FunctionAttribs
 
 function Ide(editor, ko) {
@@ -95,13 +99,7 @@ ko.extensions.AI.hisory = [{
 ko.extensions.AI.test = function ($history) {
     const tools = (new Tools(new Ide(editor, ko))).get()
 }
-/*
-["version","printing","prefs","main","mozhacks","objectTimer","dragdrop","dialogs","windowManager","uilayout","uriparse","filepicker","open","mru","commands","macros","findcontroller","stringutils","treeutils","widgets","utils","findresults","find","findtoolbar","run","interpolate","views","tabstops","keybindings","browse","help","launch","inputBuffer","window","workspace","workspace2","statusBar","markers","history","projects","toolboxes","fileutils","lint","eggs","abbrev","snippets","hyperlinks","dbg","scc","services","formatters","extensions","analytics","profiler","tcldevkit","perldevkit","koextgen","httpinspector","publishing","changeTracker","refactoring","_hasFocus","moreKomodo","logging","toolbox2","places","openfiles","dbexplorer","collaboration","notifications"]*/
-/*
-["invokePart","invokePartById","findPartById","removeImportedVirtualFilesAndFolders","reimportFromFileSystem","importFromPackage","_importFromPackage","_importPackageViaHttp","toolPathShortName","managers","BaseManager","findItemsByURL","removeItemsByURL","removeItemsByURLList","findPartsByURL","hasURL","invalidateItem","addItem","_toolboxParts","findPart","manager","open","saveProjectAs","renameProject","onload","prepareForShutdown","handle_parts_reload","safeGetFocusedPlacesView","log","extensionManager","registerExtension","exportItems","exportPackageItems","refreshStatus","fileProperties","addFileWithURL","addPartWithURLAndType","_getDirFromPart","addNewFileFromTemplate","addFile","addRemoteFile","addRemoteFolder","addGroup","removeItems","snippetProperties","addSnippet","addSnippetFromText","snippetInsert","_detabify","_stripLeadingWS","snippetInsertImpl","_textFromEJSTemplate","printdebugProperties","addPrintdebug","printdebugInsert","commandProperties","runCommand","URLProperties","addURLFromText","addURL","peMenu","customIdFromPart","partAcceptsMenuToolbar","addMenu","addMenuFromPart","removeMenuForPart","removeToolbarForPart","addToolbarFromPart","onToolboxLoaded","onToolboxUnloaded","updateToolbarForPart","isToolbarRememberedAsHidden","toggleToolbarHiddenStateInPref","addToolbar","menuProperties","addMacro","executeMacro","executeMacroById","macroProperties","addTutorial","tutorialProperties","addTemplate","templateProperties","chooseTemplate","useTemplate","folderTemplateProperties","addFolderTemplate","createFolderTemplateFromDir","chooseFolderTemplate","useFolderTemplate","SCC","active"]*/
 
-
-//alert(JSON.stringify(Object.keys(ko.projects)))
 function askQuery($chatHistory) {
     // create an instance of the XMLHttpRequest object
     var req = new XMLHttpRequest()
@@ -120,8 +118,6 @@ function askQuery($chatHistory) {
     const toolPromises = []
     var methodName = null
 
-    //alert(JSON.stringify(ko.extensions.AI.hisory))
-
     req.onreadystatechange = function() {
         if (req.readyState == XMLHttpRequest.LOADING) {
             var newLength = req.response.length
@@ -138,44 +134,8 @@ function askQuery($chatHistory) {
                         : resolve('Method not found: ' + methodName)
                     )))
                 }
-            } else {
-                //[TOOL_CALLS] {"function": "Ide_getValue", "arguments": {}}
-                if (newMessage.message.content.substring(0, 12) == '[TOOL_CALLS]') {
-                    alert('yuck')
-                    var methodName = JSON.parse(newMessage.message.content.substring(13)).function
-                    toolPromises.push(new Promise((resolve) => ((ide[methodName])
-                        ? resolve(ide[methodName]())
-                        : resolve('Method not found: ' + methodName)
-                    )))
-                } else {
-                    try {
-                        var messageAsToolCall = JSON.parse(newMessage.message.content)
-                        if (ide[messageAsToolCall.name]) {// double if condition
-                            alert('also yuck!')
-                            var methodName = messageAsToolCall.name
-                            toolPromises.push(new Promise((resolve) => ((ide[methodName])
-                                ? resolve(ide[methodName]())
-                                : resolve('Method not found: ' + methodName)
-                            )))
-                        } else {
-                            $chatHistory.value+= newMessage.message.content
-                        }
-                    } catch(e) {
-                        $chatHistory.value+= newMessage.message.content
-                    }
-                }
             }
-/*
-{"role":"user","content":"What is the current version of komodo ide?"},
-{"role":"assistant","content":"  {\"input\": \"What is the current version of komodo ide?\", \"name\": \"Ide_getKomodoIdeVersion\"}"},
-*/
 
-
-/*
-{"role":"user","content":"What is the current version of komodo?"},
-{"role":"assistant","content":"[TOOL_CALLS] {\"content\": \"Komodo IDE 14.0.1 (Build: commit@3fa7a8e)\"}"},
-{"role":"tool","content":"Method not found: undefined"}]
-*/
             responseLength = newLength
         } else if (req.readyState == XMLHttpRequest.DONE) {
             if (toolPromises.length) {
@@ -188,11 +148,6 @@ function askQuery($chatHistory) {
                     }
                     askQuery($chatHistory)
                 })
-
-                /*setTimeout(() =>
-                    alert(JSON.stringify(ko.extensions.AI.hisory[ko.extensions.AI.hisory.length - 1]))
-                , 10000)*/
-
             } else {
                 $chatHistory.value+= '\n---------------\n'
             }
@@ -202,7 +157,6 @@ function askQuery($chatHistory) {
     req.send(JSON.stringify({
         'stream': false,
         'model': 'mistral-nemo',
-        //'model': 'llama3.1
         'messages': ko.extensions.AI.hisory,
         'tools': tools
     }))
